@@ -1,0 +1,61 @@
+##################################################################################################
+# Productpage services
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: productpage
+  labels:
+    app: productpage
+    service: productpage
+    group: bookinfo
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: productpage
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bookinfo-productpage
+  labels:
+    account: productpage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-v1
+  labels:
+    app: productpage
+    version: v1
+    group: bookinfo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productpage
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: productpage
+        version: v1
+        group: bookinfo
+    spec:
+      serviceAccountName: bookinfo-productpage
+      containers:
+      - name: productpage
+        image: niklaushirt/bookinfo-productpage-v1:instana
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+        env:
+          - name: INSTANA_URL
+            value: https://eum-orange-saas.instana.io
+          - name: INSTANA_KEY
+            value: v-KVxaJeT0mqCrRbvhSx6w
+---

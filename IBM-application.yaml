@@ -1,0 +1,157 @@
+apiVersion: apps.open-cluster-management.io/v1
+kind: Channel
+metadata:
+  name: bookinfo-gitrepo
+  namespace: bookinfo-def
+spec:
+  pathname: 'https://github.com/pirsoscom/bookinfo.git'
+  type: Git
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo
+  annotations:
+    apps.open-cluster-management.io/deployables: ''
+  labels:
+    app: bookinfo
+  selfLink: /apis/app.k8s.io/v1beta1/namespaces/bookinfo-def/applications/bookinfo
+spec:
+  componentKinds:
+    - group: app.ibm.com
+      kind: Subscription
+  descriptor: {}
+  selector:
+    matchLabels:
+      app: bookinfo
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Subscription
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-details-sub
+  annotations:
+    apps.open-cluster-management.io/deployables: >-
+      bookinfo-def/bookinfo-details-sub-deploy-productpage-bookinfo-route,bookinfo-def/bookinfo-details-sub-deploy-productpage-productpage-service,bookinfo-def/bookinfo-details-sub-deploy-productpage-bookinfo-productpage-serviceaccount,bookinfo-def/bookinfo-details-sub-deploy-productpage-productpage-v1-deployment
+    apps.open-cluster-management.io/git-branch: master
+    apps.open-cluster-management.io/git-path: deploy/productpage
+    apps.open-cluster-management.io/reconcile-option: merge
+  labels:
+    app: bookinfo
+  selfLink: /apis/apps.open-cluster-management.io/v1/namespaces/bookinfo-def/subscriptions/bookinfo-details-sub
+spec:
+  channel: bookinfo-def/bookinfo-gitrepo
+  placement:
+    placementRef:
+      name: bookinfo-placement-1
+      kind: PlacementRule
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Subscription
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-productpage-sub
+  annotations:
+    apps.open-cluster-management.io/deployables: >-
+      bookinfo-def/bookinfo-productpage-sub-deploy-details-details-service,bookinfo-def/bookinfo-productpage-sub-deploy-details-bookinfo-details-serviceaccount,bookinfo-def/bookinfo-productpage-sub-deploy-details-details-v1-deployment
+    apps.open-cluster-management.io/git-branch: master
+    apps.open-cluster-management.io/git-path: deploy/details
+    apps.open-cluster-management.io/reconcile-option: merge
+  labels:
+    app: bookinfo
+  selfLink: /apis/apps.open-cluster-management.io/v1/namespaces/bookinfo-def/subscriptions/bookinfo-productpage-sub
+spec:
+  channel: bookinfo-def/bookinfo-gitrepo
+  placement:
+    placementRef:
+      name: bookinfo-placement-2
+      kind: PlacementRule
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Subscription
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-reviews-sub
+  annotations:
+    apps.open-cluster-management.io/git-branch: master
+    apps.open-cluster-management.io/git-path: deploy/reviews
+    apps.open-cluster-management.io/reconcile-option: merge
+  labels:
+    app: bookinfo
+spec:
+  channel: bookinfo-def/bookinfo-gitrepo
+  placement:
+    placementRef:
+      name: bookinfo-placement-3
+      kind: PlacementRule
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: Subscription
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-ratings-sub
+  annotations:
+    apps.open-cluster-management.io/git-branch: master
+    apps.open-cluster-management.io/git-path: deploy/ratings
+    apps.open-cluster-management.io/reconcile-option: merge
+  labels:
+    app: bookinfo
+spec:
+  channel: bookinfo-def/bookinfo-gitrepo
+  placement:
+    placementRef:
+      name: bookinfo-placement-4
+      kind: PlacementRule
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-placement-1
+  labels:
+    app: bookinfo
+  selfLink:
+spec:
+  clusterSelector:
+    matchLabels:
+      environment: Prod
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-placement-2
+  labels:
+    app: bookinfo
+  selfLink:
+spec:
+  clusterSelector:
+    matchLabels:
+      environment: Prod
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-placement-3
+  labels:
+    app: bookinfo
+  selfLink:
+spec:
+  clusterSelector:
+    matchLabels:
+      environment: Prod
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  namespace: bookinfo-def
+  name: bookinfo-placement-4
+  labels:
+    app: bookinfo
+  selfLink:
+spec:
+  clusterSelector:
+    matchLabels:
+      environment: Prod
