@@ -17,7 +17,8 @@ const instana = require('@instana/collector');
 instana({
     tracing: {
         enabled: true
-    }
+    },
+    serviceName: 'ratings'
 });
 
 

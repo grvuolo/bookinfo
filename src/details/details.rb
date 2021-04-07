@@ -188,4 +188,6 @@ def get_forward_headers(request)
   return headers
 end
 
+gem 'instana'
+
 server.start

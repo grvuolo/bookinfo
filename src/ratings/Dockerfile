@@ -17,7 +17,7 @@ FROM node:12.18.1-slim
 COPY package.json /opt/microservices/
 COPY ratings.js /opt/microservices/
 WORKDIR /opt/microservices
-RUN npm install
+RUN npm install --only=production
 
 #hadolint ignore=DL3008
 RUN apt-get update \
